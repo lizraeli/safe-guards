@@ -8,10 +8,10 @@ import * as shape from "./src/shape";
 import * as types from "./src/types";
 
 export default {
-    ...core,
-    ...array,
-    ...pair,
-    ...threeTuple,
-    ...shape,
-    ...types
-}
+  ...core,
+  ...array,
+  ...pair,
+  ...threeTuple,
+  ...shape,
+  ...types,
+};
