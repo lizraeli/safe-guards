@@ -1,6 +1,7 @@
 import { isNumber, isString } from "./core";
 import { isArrayOf } from "./array";
 import { isPairOf } from "./pair";
+import { isEither } from "./either";
 import { isShape, testShape } from "./shape";
 
 interface Language {
@@ -44,12 +45,9 @@ const isCountry = isShape<Country>({
 });
 
 describe("isShape for simple interface", () => {
-  test.each([["2"], [2], [() => {}]])(
-    "returns false for %p",
-    (value) => {
-      expect(isLanguage(value)).toBe(false);
-    }
-  );
+  test.each([["2"], [2], [() => {}]])("returns false for %p", (value) => {
+    expect(isLanguage(value)).toBe(false);
+  });
 
   test("return true for exact match", () => {
     const french = {
@@ -171,15 +169,12 @@ const testCountry = testShape<Country>({
 });
 
 describe("testShape for simple interface", () => {
-  test.each([["2"], [2], [() => {}]])(
-    "returns false for %p",
-    (value) => {
-      expect(testLanguage(value)).toStrictEqual({
-        success: false,
-        message: "argument is not a plain object",
-      });
-    }
-  );
+  test.each([["2"], [2], [() => {}]])("returns false for %p", (value) => {
+    expect(testLanguage(value)).toStrictEqual({
+      success: false,
+      message: "argument is not a plain object",
+    });
+  });
 
   test("return success for exact match", () => {
     const french = {
@@ -311,4 +306,41 @@ describe("isShape for nested interface", () => {
       message: "value of property 'languages' is not of the expected type.",
     });
   });
+});
+
+describe("testShape with either", () => {
+  interface Cooridnates {
+    x: number | string;
+    y: number;
+  }
+
+  const testCoordinates = testShape<Cooridnates>({
+    x: isEither(isNumber, isString),
+    y: isNumber,
+  });
+
+  test.each([[2], [() => {}]])("returns false for %p", (value) => {
+    expect(testCoordinates(value)).toStrictEqual({
+      success: false,
+      message: "argument is not a plain object",
+    });
+  });
+
+  test("invalid property type", () => {
+    const testCoords = { x: "2", y: "4" };
+    expect(testCoordinates(testCoords)).toStrictEqual({
+      success: false,
+      message: "value of property 'y' is not of the expected type.",
+    });
+  });
+
+  test.each([[{ x: "2", y: 4 }], [{ x: 2, y: 4 }]])(
+    "returns false for %p",
+    (value) => {
+      expect(testCoordinates(value)).toStrictEqual({
+        success: true,
+        value,
+      });
+    }
+  );
 });
