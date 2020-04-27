@@ -1,5 +1,4 @@
-import { isArray } from "./core";
-import type { TypeCheck, TestResult } from "./types";
+import type { TypeCheck } from "./types";
 
 type EitherTestResult<X, Y> =
   | {

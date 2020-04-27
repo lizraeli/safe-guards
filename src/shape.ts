@@ -1,8 +1,12 @@
 import { isObject } from "./core";
-import type { TypeCheckDict, TestResult } from "./types";
+import type { TypeCheckDict } from "./types";
+
+export type ShapeTestResult<K> =
+  | { success: true; value: K }
+  | { success: false; message: string };
 
 export function testShape<T>(checkDict: TypeCheckDict<T>) {
-  return function <K>(value: K): TestResult<K> {
+  return function <K>(value: K): ShapeTestResult<K> {
     if (!isObject(value)) {
       return {
         success: false,
