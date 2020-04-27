@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es5",
+    "lib": ["es2018"],
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "declaration": true,
+    "strict": true,
+    "noEmit": true,
+    "outDir": "lib"
+  },
+  "exclude": ["./node_modules/*", "./lib/*", "./src/*.test.ts"]
+
+}
