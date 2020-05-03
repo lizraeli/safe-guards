@@ -10,7 +10,7 @@ type OneOfTestResult<T> =
 export function testOneOfLiterals<T extends string | number>(
   ...intialValues: T[]
 ) {
-  const checks = intialValues.map((value) => isLiteral(value));
+  const checks = intialValues.map(isLiteral);
 
   function test(value: unknown): OneOfTestResult<T> {
     for (const check of checks) {
