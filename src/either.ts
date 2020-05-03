@@ -7,26 +7,34 @@ type EitherTestResult<X, Y> =
     }
   | { success: false };
 
-export const testEither = <X, Y>(
+export function testEither<X, Y>(
   checkFirst: TypeCheck<X>,
   checkSecond: TypeCheck<Y>
-) => (value: unknown): EitherTestResult<X, Y> => {
-  if (checkFirst(value) || checkSecond(value)) {
+) {
+  function test(value: unknown): EitherTestResult<X, Y> {
+    if (checkFirst(value) || checkSecond(value)) {
+      return {
+        success: true,
+        value,
+      };
+    }
+
     return {
-      success: true,
-      value,
+      success: false,
     };
   }
 
-  return {
-    success: false,
-  };
-};
+  return test;
+}
 
-export const isEither = <X, Y>(
+export function isEither<X, Y>(
   checkFirst: TypeCheck<X>,
   checkSecond: TypeCheck<Y>
-) => (value: unknown): value is X | Y => {
-  const result = testEither(checkFirst, checkSecond)(value);
-  return result.success;
-};
+) {
+  function check(value: unknown): value is X | Y {
+    const result = testEither(checkFirst, checkSecond)(value);
+    return result.success;
+  }
+
+  return check;
+}

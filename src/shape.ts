@@ -6,7 +6,7 @@ export type ShapeTestResult<K> =
   | { success: false; message: string };
 
 export function testShape<T>(checkDict: TypeCheckDict<T>) {
-  return function <K>(value: K): ShapeTestResult<K> {
+  function test<K>(value: K): ShapeTestResult<K> {
     if (!isObject(value)) {
       return {
         success: false,
@@ -15,8 +15,6 @@ export function testShape<T>(checkDict: TypeCheckDict<T>) {
     }
 
     for (const key in checkDict) {
-      const check = checkDict[key];
-
       if (!(key in value)) {
         return {
           success: false,
@@ -24,7 +22,10 @@ export function testShape<T>(checkDict: TypeCheckDict<T>) {
         };
       }
 
-      if (!check(value[key])) {
+      const check = checkDict[key];
+      const propValue = value[key];
+
+      if (!check(propValue)) {
         return {
           success: false,
           message: `value of property '${key}' is not of the expected type.`,
@@ -36,12 +37,16 @@ export function testShape<T>(checkDict: TypeCheckDict<T>) {
       success: true,
       value,
     };
-  };
+  }
+
+  return test;
 }
 
 export function isShape<T>(checkDict: TypeCheckDict<T>) {
-  return function (value: unknown): value is T {
+  function check(value: unknown): value is T {
     const result = testShape(checkDict)(value);
     return result.success;
-  };
+  }
+
+  return check;
 }
