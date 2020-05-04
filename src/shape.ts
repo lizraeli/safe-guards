@@ -1,12 +1,12 @@
 import { isObject } from "./core";
 import type { TypeCheckDict } from "./types";
 
-export type ShapeTestResult<K> =
-  | { success: true; value: K }
+export type ShapeTestResult<T> =
+  | { success: true; value: T }
   | { success: false; message: string };
 
 export function testShape<T>(checkDict: TypeCheckDict<T>) {
-  function test<K>(value: K): ShapeTestResult<K> {
+  function test<K>(value: K): ShapeTestResult<T> {
     if (!isObject(value)) {
       return {
         success: false,
@@ -35,8 +35,8 @@ export function testShape<T>(checkDict: TypeCheckDict<T>) {
 
     return {
       success: true,
-      value,
-    };
+      value
+    } as any;
   }
 
   return test;
